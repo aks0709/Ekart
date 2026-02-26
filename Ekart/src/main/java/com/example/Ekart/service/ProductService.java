@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.Ekart.exception.ResourceNotFoundException;
 import com.example.Ekart.model.Product;
 import com.example.Ekart.repository.ProductRepository;
 
@@ -24,7 +25,8 @@ public class ProductService {
 
     public Product getById(Long id) {
         log.info("ProductService.getById id={}", id);
-        return repository.findById(id).orElse(null); // Phase 2: replace null with exception
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 
     public List<Product> getAll() {
@@ -34,15 +36,13 @@ public class ProductService {
 
     public Product update(Long id, Product p) {
         log.info("ProductService.update id={}", id);
-        return repository.findById(id)
-                .map(existing -> {
-                    existing.setName(p.getName());
-                    existing.setPrice(p.getPrice());
-                    existing.setDescription(p.getDescription());
-                    existing.setStock(p.getStock());
-                    return repository.save(existing);
-                })
-                .orElse(null); // Phase 2: replace null with exception
+        Product existing = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        existing.setName(p.getName());
+        existing.setPrice(p.getPrice());
+        existing.setDescription(p.getDescription());
+        existing.setStock(p.getStock());
+        return repository.save(existing);
     }
 
     public void delete(Long id) {
