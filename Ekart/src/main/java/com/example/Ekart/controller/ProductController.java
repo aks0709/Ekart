@@ -38,8 +38,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable Long id) {
         log.info("GET /api/products/{} - fetching product", id);
-        Product found = service.getById(id);
-        return (found == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(found);
+        return ResponseEntity.ok(service.getById(id));
     }
 
     // READ (all)
@@ -53,8 +52,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Product> update(@PathVariable Long id, @Valid @RequestBody Product product) {
         log.info("PUT /api/products/{} - updating product", id);
-        Product updated = service.update(id, product);
-        return (updated == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(updated);
+        return ResponseEntity.ok(service.update(id, product));
     }
 
     // DELETE

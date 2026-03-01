@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EKART - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <h1>EKART</h1>
+        <div>
+            <a href="home.html">Products</a>
+            <a href="cart.html">Cart</a>
+            <button id="logoutBtn">Logout</button>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="header">
+            <h2>Products</h2>
+            <button id="addProductBtn" class="btn-primary">Add Product</button>
+        </div>
+        <div id="productList" class="product-grid"></div>
+    </div>
+
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add Product</h2>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <input type="text" id="productName" placeholder="Name" required>
+                <input type="number" id="productPrice" placeholder="Price" step="0.01" required>
+                <input type="text" id="productDescription" placeholder="Description">
+                <input type="number" id="productStock" placeholder="Stock" required>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/products.js"></script>
+</body>
+</html>

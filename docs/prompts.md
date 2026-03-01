@@ -33,3 +33,51 @@ Create enum Role with values ADMIN, CUSTOMER. Keep it in package model. No metho
 **Prompt:** resolve the errors
 
 **Use Case:** Add JJWT dependencies to pom.xml to fix JWT compilation errors.
+
+
+## Prompt 7
+**Prompt:** just go through through the project and make sure things are working fine everything is alright
+
+**Use Case:** Review entire project structure, verify compilation, fix Product.java Lombok annotations, remove invalid test dependencies from pom.xml, and clean up null checks in ProductController.
+
+
+## Prompt 8
+**Prompt:** { "details": "Internal server error", "message": "Content-Type 'text/plain;charset=UTF-8' is not supported", "timestamp": "2026-02-27T00:19:34.8893007", "status": 500 } in postman when i try to login
+
+**Use Case:** Fix AuthController endpoints to explicitly require application/json content type for login and register.
+
+
+## Prompt 9
+**Prompt:** actually i wrote wrong the above thing error is shown when i try to register
+
+**Use Case:** Clarified that the Content-Type error occurs on register endpoint, same fix applies.
+
+
+## Prompt 10
+**Prompt:** perform automation testing on this project and store all the testcases in docs/testcases.md
+
+**Use Case:** Create ProductServiceTest with 6 unit tests (create, getById success/failure, getAll, update, delete), add spring-security-test dependency, run tests successfully (7/7 passed), and document all test cases including manual API testing scenarios in docs/testcases.md.
+
+
+## Prompt 11
+**Prompt:** minimal changes, no refactor of backend, only create new frontend files. You are a frontend expert. Generate a simple HTML/CSS/JS frontend for my existing Ekart backend. Include: a login page for JWT auth (store token in localStorage), logout, a home page showing products, ability to add/update products, a cart page with add-to-cart (+/-), remove item, and clear cart. Use the backend endpoints automatically and map them correctly based on standard REST naming. Create clean, simple UI with EKART as the site title. Keep responses token-friendly and generate only necessary frontend files.
+
+**Use Case:** Create complete frontend with login.html, register.html, home.html (products with CRUD), cart.html (add/remove/clear), CSS styling, and JavaScript for auth, products, and cart management using localStorage for JWT and cart data.
+
+
+## Prompt 12
+**Prompt:** Generate the documentation files inside /docs folder: 1. HLD.md → full architecture, layers, JWT flow, DB design 2. api-endpoints.md → list all endpoints with examples 3. execution-steps.md → how to run the app,how to start front end and backend together in vs code alternatives as well like by shell/cmd by run ,go live , DB setup, Postman setup
+
+**Use Case:** Create comprehensive documentation covering system architecture with JWT flow and database design (HLD.md), complete API reference with cURL and Postman examples (api-endpoints.md), and detailed execution instructions for running backend/frontend using VS Code, command line, Live Server, and Postman setup (execution-steps.md).
+
+
+## Prompt 13
+**Prompt:** add one more document also which store all the logs of whatever action i will be performing
+
+**Use Case:** Create activity-log.md to track all project activities with timestamps, action types, and descriptions for maintaining a complete audit trail of development work.
+
+
+## Prompt 14
+**Prompt:** Error: Failed to fetch when i try to login or register so check is front end and backend connected check for cors issue if it exsist ,make then work together
+
+**Use Case:** Fixed CORS issue by adding CorsConfiguration in SecurityConfig to allow frontend origins (localhost:8000, 127.0.0.1:5500, file://) with all HTTP methods and headers enabled.
