@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekart - Cart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Ekart</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="cart.html">Cart (<span id="cartCount">0</span>)</a>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Shopping Cart</h1>
+        <div id="cartItems" class="cart-items"></div>
+        <div id="cartSummary" class="cart-summary"></div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+    <script>
+        window.onload = () => {
+            checkAuth();
+            loadCart();
+            updateCartCount();
+        };
+
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart.length === 0) {
+                document.getElementById('cartItems').innerHTML = '<p>Your cart is empty</p>';
+                document.getElementById('cartSummary').innerHTML = '';
+                return;
+            }
+
+            const itemsHtml = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div class="item-info">
+                        <h3>${item.name}</h3>
+                        <p class="price">₹${item.price}</p>
+                    </div>
+                    <div class="item-controls">
+                        <button onclick="decreaseQty(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="increaseQty(${index})" ${item.quantity >= item.stock ? 'disabled' : ''}>+</button>
+                        <button onclick="removeItem(${index})">Remove</button>
+                    </div>
+                    <p class="item-total">₹${item.price * item.quantity}</p>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            document.getElementById('cartItems').innerHTML = itemsHtml;
+            document.getElementById('cartSummary').innerHTML = `
+                <h2>Total: ₹${total}</h2>
+                <button onclick="clearCart()">Clear Cart</button>
+                <button onclick="placeOrder()">Place Order</button>
+            `;
+        }
+
+        function increaseQty(index) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart[index].quantity >= cart[index].stock) {
+                showToast('Cannot exceed available stock');
+                return;
+            }
+            cart[index].quantity++;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+            updateCartCount();
+        }
+
+        function decreaseQty(index) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart[index].quantity > 1) {
+                cart[index].quantity--;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                loadCart();
+                updateCartCount();
+            } else {
+                removeItem(index);
+            }
+        }
+
+        function removeItem(index) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+            updateCartCount();
+            showToast('Item removed');
+        }
+
+        function clearCart() {
+            if (confirm('Clear all items from cart?')) {
+                localStorage.setItem('cart', '[]');
+                loadCart();
+                updateCartCount();
+                showToast('Cart cleared');
+            }
+        }
+
+        function placeOrder() {
+            showToast('Order placement feature coming soon!');
+        }
+    </script>
+</body>
+</html>

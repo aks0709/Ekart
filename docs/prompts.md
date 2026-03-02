@@ -81,3 +81,33 @@ Create enum Role with values ADMIN, CUSTOMER. Keep it in package model. No metho
 **Prompt:** Error: Failed to fetch when i try to login or register so check is front end and backend connected check for cors issue if it exsist ,make then work together
 
 **Use Case:** Fixed CORS issue by adding CorsConfiguration in SecurityConfig to allow frontend origins (localhost:8000, 127.0.0.1:5500, file://) with all HTTP methods and headers enabled.
+
+
+## Prompt 17
+**Prompt:** Make only minimal, scoped changes. Do NOT refactor or modify unrelated files. add new fields to product : brand, category, releaseDate, productAvailable, stockQuantity, imageName, imageType, imageData adn other fields as required. make sure to make corresponding controllers ,services to handle them and reflect the changes in front end too
+
+**Use Case:** Added 8 new fields to Product entity (brand, category, releaseDate, productAvailable, stockQuantity, imageName, imageType, imageData), created image upload endpoint in ProductController, updated ProductService with createWithImage method, and updated frontend to display images and new fields with file upload support.
+
+
+## Prompt 18
+**Prompt:** Resolve the errors, as the test files should be updated too
+
+**Use Case:** Updated ProductServiceTest to use new Product constructor with 8 additional fields (passing null for new fields), all 6 tests now passing successfully.
+
+
+## Prompt 19
+**Prompt:** check the endpoints as products are not displaying on the front page, neither the product getting save and also front should be like only admin is able to add product not user , as we have defined two roles user and admin ,
+
+**Use Case:** Added role-based access control to SecurityConfig (ADMIN and CUSTOMER can access products), identified that backend is already running on port 8080, need to verify database connection and test endpoints.
+
+
+## Prompt 20
+**Prompt:** can you check if end points are working or not
+
+**Use Case:** Fixed duplicate @PostMapping conflict in ProductController by separating image upload to /upload endpoint, verified compilation successful, all 7 product endpoints configured correctly.
+
+
+## Prompt 21
+**Prompt:** add one more feature searchProduct controller which takes request param and we are able to search for specific product when by keyword ,it can be description,category,name etc
+
+**Use Case:** Added search functionality with GET /api/products/search?keyword={keyword} endpoint that searches across name, description, and category fields (case-insensitive).

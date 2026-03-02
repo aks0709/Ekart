@@ -1,12 +1,14 @@
 package com.example.Ekart.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -43,8 +45,24 @@ public class Product {
     @Column(length = 1000)
     private String description;
 
-    @NotNull(message = "Stock is required")
     @Min(value = 0, message = "Stock must be >= 0")
-    @Column(nullable = false)
     private Integer stock;
+
+    private String brand;
+    
+    private String category;
+    
+    private LocalDate releaseDate;
+    
+    private Boolean productAvailable;
+    
+    private Integer stockQuantity;
+    
+    private String imageName;
+    
+    private String imageType;
+    
+    @Lob
+    @Column(columnDefinition = "BYTEA")
+    private byte[] imageData;
 }

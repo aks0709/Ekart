@@ -1,8 +1,11 @@
 package com.example.Ekart.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Ekart.exception.ResourceNotFoundException;
 import com.example.Ekart.model.Product;
@@ -20,6 +23,42 @@ public class ProductService {
 
     public Product create(Product p) {
         log.info("ProductService.create name={}", p.getName());
+        return repository.save(p);
+    }
+
+    public Product createWithImage(String name, String price, String description, String brand,
+                                   String category, String stock, String productAvailable,
+                                   String releaseDate, MultipartFile image) throws Exception {
+        log.info("ProductService.createWithImage name={}", name);
+        Product p = new Product();
+        p.setName(name);
+        p.setPrice(new BigDecimal(price));
+        if (description != null && !description.isEmpty()) {
+            p.setDescription(description);
+        }
+        if (brand != null && !brand.isEmpty()) {
+            p.setBrand(brand);
+        }
+        if (category != null && !category.isEmpty()) {
+            p.setCategory(category);
+        }
+        if (releaseDate != null && !releaseDate.isEmpty()) {
+            p.setReleaseDate(LocalDate.parse(releaseDate));
+        }
+        if (productAvailable != null && !productAvailable.isEmpty()) {
+            p.setProductAvailable(Boolean.parseBoolean(productAvailable));
+        }
+        int quantity = 0;
+        if (stock != null && !stock.isEmpty()) {
+            quantity = Integer.parseInt(stock);
+        }
+        p.setStock(quantity);
+        p.setStockQuantity(quantity);
+        if (image != null && !image.isEmpty()) {
+            p.setImageName(image.getOriginalFilename());
+            p.setImageType(image.getContentType());
+            p.setImageData(image.getBytes());
+        }
         return repository.save(p);
     }
 
@@ -41,12 +80,25 @@ public class ProductService {
         existing.setName(p.getName());
         existing.setPrice(p.getPrice());
         existing.setDescription(p.getDescription());
-        existing.setStock(p.getStock());
+        if (p.getStock() != null) {
+            existing.setStock(p.getStock());
+            existing.setStockQuantity(p.getStock());
+        }
+        existing.setBrand(p.getBrand());
+        existing.setCategory(p.getCategory());
+        existing.setReleaseDate(p.getReleaseDate());
+        existing.setProductAvailable(p.getProductAvailable());
         return repository.save(existing);
     }
 
     public void delete(Long id) {
         log.info("ProductService.delete id={}", id);
         repository.deleteById(id);
+    }
+
+    public List<Product> searchProducts(String keyword) {
+        log.info("ProductService.searchProducts keyword={}", keyword);
+        return repository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrCategoryContainingIgnoreCase(
+                keyword, keyword, keyword);
     }
 }

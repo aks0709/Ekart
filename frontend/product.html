@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekart - Product</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Ekart</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="cart.html">Cart (<span id="cartCount">0</span>)</a>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="productDetail" class="product-detail"></div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+    <script>
+        window.onload = () => {
+            checkAuth();
+            loadProduct();
+            updateCartCount();
+        };
+
+        async function loadProduct() {
+            const id = new URLSearchParams(location.search).get('id');
+            if (!id) {
+                location.href = 'index.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/products/${id}`, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                if (!response.ok) throw new Error('Product not found');
+                const product = await response.json();
+                displayProduct(product);
+            } catch (error) {
+                showToast('Error loading product');
+                setTimeout(() => location.href = 'index.html', 1500);
+            }
+        }
+
+        function displayProduct(p) {
+            document.getElementById('productDetail').innerHTML = `
+                <div class="detail-container">
+                    <img src="${p.imageName ? `http://localhost:8080/api/products/${p.id}/image` : 'placeholder.png'}" alt="${p.name}">
+                    <div class="detail-info">
+                        <h1>${p.name}</h1>
+                        <p class="price">₹${p.price}</p>
+                        <p><strong>Brand:</strong> ${p.brand || 'N/A'}</p>
+                        <p><strong>Category:</strong> ${p.category || 'N/A'}</p>
+                        <p><strong>Stock:</strong> ${p.stockQuantity || p.stock || 0}</p>
+                        <p><strong>Available:</strong> ${p.productAvailable ? 'Yes' : 'No'}</p>
+                        <p><strong>Description:</strong> ${p.description || 'No description'}</p>
+                        <div class="admin-actions-detail">
+                            <button onclick="addToCart(${p.id}, '${p.name}', ${p.price}, ${p.stockQuantity || p.stock || 0})">Add to Cart</button>
+                            <button onclick="editProduct(${p.id})">Update</button>
+                            <button onclick="deleteProduct(${p.id})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addToCart(id, name, price, stock) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existing = cart.find(item => item.id === id);
+            
+            if (existing) {
+                if (existing.quantity >= stock) {
+                    showToast('Cannot exceed available stock');
+                    return;
+                }
+                existing.quantity++;
+            } else {
+                cart.push({ id, name, price, quantity: 1, stock });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showToast('Added to cart');
+        }
+
+        function editProduct(id) {
+            location.href = `edit-product.html?id=${id}`;
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+            try {
+                const response = await fetch(`http://localhost:8080/api/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                if (response.status === 403) {
+                    showToast('Access denied: Admin only');
+                    return;
+                }
+                if (!response.ok) throw new Error('Delete failed');
+                showToast('Product deleted');
+                setTimeout(() => location.href = 'index.html', 1500);
+            } catch (error) {
+                showToast('Failed to delete product');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -143,3 +143,91 @@ This document tracks all actions, changes, and activities performed on the EKART
 
 **02:45:00** - BUG_FIX - Added CORS configuration in SecurityConfig to allow frontend origins (localhost:8000, 127.0.0.1:5500, file://)
 
+
+
+**03:00:00** - MODEL_UPDATED - Added new fields to Product entity: brand, category, releaseDate, productAvailable, stockQuantity, imageName, imageType, imageData
+
+**03:05:00** - CONTROLLER_UPDATED - Added createWithImage and getImage endpoints in ProductController for image upload/retrieval
+
+**03:10:00** - SERVICE_UPDATED - Added createWithImage method and updated update method in ProductService to handle new fields
+
+**03:15:00** - FRONTEND_UPDATED - Updated home.html form with new product fields and image upload
+
+**03:20:00** - FRONTEND_UPDATED - Updated products.js to display images, new fields, and handle image upload with FormData
+
+
+
+**03:25:00** - TESTING - Updated ProductServiceTest to match new Product constructor with 8 additional fields, all tests passing (6/6)
+
+
+
+**03:30:00** - SECURITY_UPDATED - Added role-based access control (ADMIN, CUSTOMER) to product endpoints in SecurityConfig
+
+**03:35:00** - ISSUE_IDENTIFIED - Backend already running on port 8080, products not displaying on frontend, need to check if backend is accessible and database has data
+
+
+
+**03:40:00** - BUG_FIX - Fixed duplicate @PostMapping in ProductController by adding /upload path for image upload endpoint
+
+**03:45:00** - TESTING - Compilation successful, all endpoints configured correctly:
+  - POST /api/products (JSON)
+  - POST /api/products/upload (multipart/form-data with image)
+  - GET /api/products
+  - GET /api/products/{id}
+  - GET /api/products/{id}/image
+  - PUT /api/products/{id}
+  - DELETE /api/products/{id}
+
+
+
+**03:50:00** - FEATURE_ADDED - Added product search functionality:
+  - ProductRepository: findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrCategoryContainingIgnoreCase
+  - ProductService: searchProducts(keyword)
+  - ProductController: GET /api/products/search?keyword={keyword}
+
+
+
+**03:55:00** - BUG_FIX - Added missing java.util.List import to ProductRepository, compilation successful
+
+
+
+---
+
+## Recent Updates (2024-02-27)
+
+### Frontend Development
+- Created complete HTML/CSS/JS frontend with 7 pages
+- Implemented JWT authentication with role storage
+- Added live search with filters (category, brand, availability) and sort (price)
+- Built shopping cart with stock validation and quantity controls
+- Created admin-only CRUD forms for products
+- Added toast notifications for user feedback
+- Implemented role-based UI (admin sees CRUD, customers see cart)
+
+### Backend Enhancements
+- Added product search endpoint: GET /api/products/search?keyword={keyword}
+- Enhanced Product entity with 8 new fields: brand, category, releaseDate, productAvailable, stockQuantity, imageName, imageType, imageData
+- Created multipart upload endpoint: POST /api/products/upload
+- Implemented role-based security: ADMIN-only for POST/PUT/DELETE, both roles for GET
+- Fixed AuthService to return both token and role in login/register responses
+- Unified stock and stockQuantity fields to stay in sync
+- Added CORS configuration for frontend origins
+
+### Security Updates
+- Implemented strict ADMIN-only protection on product CRUD endpoints
+- Added HTTP method-based authorization (HttpMethod.GET/POST/PUT/DELETE)
+- Returns 403 Forbidden for non-admin CRUD attempts
+- JWT token includes user role for frontend access control
+
+### Bug Fixes
+- Fixed stock field validation (removed @NotNull constraint)
+- Fixed FormData parameter mapping for multipart uploads
+- Fixed product update to sync both stock and stockQuantity fields
+- Added proper error handling with console logging for debugging
+- Fixed admin button visibility on page load
+
+### Documentation
+- Updated api-endpoints.md with all new endpoints and fields
+- Added frontend features documentation
+- Added security configuration details
+- Updated response examples with new product fields

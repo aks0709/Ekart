@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekart - Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Ekart</a>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search products..." oninput="applyFilters()">
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="cart.html">Cart (<span id="cartCount">0</span>)</a>
+                <button id="addProductBtn" onclick="location.href='add-product.html'">Add Product</button>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Products</h1>
+        <div class="filters">
+            <select id="categoryFilter" onchange="applyFilters()">
+                <option value="">All Categories</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Home">Home</option>
+                <option value="Books">Books</option>
+                <option value="Sports">Sports</option>
+            </select>
+            <select id="brandFilter" onchange="applyFilters()">
+                <option value="">All Brands</option>
+            </select>
+            <select id="availabilityFilter" onchange="applyFilters()">
+                <option value="">All</option>
+                <option value="true">In Stock</option>
+                <option value="false">Out of Stock</option>
+            </select>
+            <select id="sortFilter" onchange="applyFilters()">
+                <option value="">Sort By</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+            </select>
+        </div>
+        <div id="productsGrid" class="products-grid"></div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+    <script>
+        let allProducts = [];
+
+        window.onload = () => {
+            checkAuth();
+            loadProducts();
+            updateCartCount();
+        };
+
+        async function loadProducts() {
+            try {
+                const response = await fetch('http://localhost:8080/api/products', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                if (!response.ok) throw new Error('Failed to load products');
+                allProducts = await response.json();
+                populateBrandFilter();
+                applyFilters();
+            } catch (error) {
+                showToast('Error loading products');
+            }
+        }
+
+        function populateBrandFilter() {
+            const brands = [...new Set(allProducts.map(p => p.brand).filter(b => b))];
+            const brandFilter = document.getElementById('brandFilter');
+            brandFilter.innerHTML = '<option value="">All Brands</option>' + 
+                brands.map(b => `<option value="${b}">${b}</option>`).join('');
+        }
+
+        function applyFilters() {
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const brand = document.getElementById('brandFilter').value;
+            const availability = document.getElementById('availabilityFilter').value;
+            const sort = document.getElementById('sortFilter').value;
+
+            let filtered = allProducts.filter(p => {
+                const matchKeyword = !keyword || 
+                    p.name.toLowerCase().includes(keyword) || 
+                    (p.brand && p.brand.toLowerCase().includes(keyword)) || 
+                    (p.category && p.category.toLowerCase().includes(keyword)) || 
+                    (p.description && p.description.toLowerCase().includes(keyword));
+                const matchCategory = !category || p.category === category;
+                const matchBrand = !brand || p.brand === brand;
+                const matchAvailability = !availability || String(p.productAvailable) === availability;
+                return matchKeyword && matchCategory && matchBrand && matchAvailability;
+            });
+
+            if (sort === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+            if (sort === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+
+            displayProducts(filtered);
+        }
+
+        function displayProducts(products) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(p => `
+                <div class="product-card" onclick="viewProduct(${p.id})">
+                    <img src="${p.imageName ? `http://localhost:8080/api/products/${p.id}/image` : 'placeholder.png'}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <p class="price">₹${p.price}</p>
+                    <p class="category">${p.category || 'General'}</p>
+                    <div class="admin-actions" onclick="event.stopPropagation()">
+                        <button onclick="editProduct(${p.id})">Update</button>
+                        <button onclick="deleteProduct(${p.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewProduct(id) {
+            location.href = `product.html?id=${id}`;
+        }
+
+        function editProduct(id) {
+            location.href = `edit-product.html?id=${id}`;
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Delete this product?')) return;
+            try {
+                const response = await fetch(`http://localhost:8080/api/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                if (response.status === 403) {
+                    showToast('Access denied: Admin only');
+                    return;
+                }
+                if (!response.ok) throw new Error('Delete failed');
+                showToast('Product deleted');
+                loadProducts();
+            } catch (error) {
+                showToast('Failed to delete product');
+            }
+        }
+    </script>
+</body>
+</html>

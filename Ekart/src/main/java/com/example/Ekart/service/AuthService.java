@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -18,14 +20,17 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
-    public String register(User user) {
+    public Map<String, String> register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return jwtUtil.generateToken(user.getEmail());
+        User saved = userRepository.save(user);
+        String token = jwtUtil.generateToken(saved.getEmail());
+        return Map.of("token", token, "role", saved.getRole().name());
     }
 
-    public String login(String email, String password) {
+    public Map<String, String> login(String email, String password) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        return jwtUtil.generateToken(email);
+        User user = userRepository.findByEmail(email).orElseThrow();
+        String token = jwtUtil.generateToken(email);
+        return Map.of("token", token, "role", user.getRole().name());
     }
 }

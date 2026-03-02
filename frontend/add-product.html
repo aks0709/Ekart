@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekart - Add Product</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Ekart</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Add Product</h1>
+        <form id="productForm" class="product-form" onsubmit="handleSubmit(event)">
+            <input type="text" id="name" placeholder="Product Name" required>
+            <input type="number" id="price" placeholder="Price" step="0.01" required>
+            <textarea id="description" placeholder="Description" rows="3"></textarea>
+            <input type="text" id="brand" placeholder="Brand">
+            <select id="category" required>
+                <option value="">Select Category</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Home">Home</option>
+                <option value="Books">Books</option>
+                <option value="Sports">Sports</option>
+            </select>
+            <input type="number" id="stock" placeholder="Stock Quantity" required>
+            <select id="productAvailable" required>
+                <option value="">Product Available?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+            <input type="date" id="releaseDate" placeholder="Release Date">
+            <input type="file" id="image" accept="image/*">
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+    <script>
+        window.onload = () => {
+            checkAuth();
+        };
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const price = document.getElementById('price').value;
+            const description = document.getElementById('description').value.trim();
+            const brand = document.getElementById('brand').value.trim();
+            const category = document.getElementById('category').value;
+            const stock = document.getElementById('stock').value;
+            const productAvailable = document.getElementById('productAvailable').value;
+            const releaseDate = document.getElementById('releaseDate').value;
+            const imageFile = document.getElementById('image').files[0];
+
+            if (!name || !price || !category || !stock || !productAvailable) {
+                showToast('Please fill all required fields');
+                return;
+            }
+
+            console.log('Submitting product:', { name, price, category, stock, productAvailable });
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('price', price);
+            formData.append('description', description);
+            formData.append('brand', brand);
+            formData.append('category', category);
+            formData.append('stock', stock);
+            formData.append('productAvailable', productAvailable);
+            if (releaseDate) formData.append('releaseDate', releaseDate);
+            if (imageFile) formData.append('image', imageFile);
+
+            try {
+                const response = await fetch('http://localhost:8080/api/products/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+                    body: formData
+                });
+
+                console.log('Response status:', response.status);
+                
+                if (response.status === 403) {
+                    showToast('Access denied: Admin only');
+                    return;
+                }
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    showToast('Failed to add product: ' + response.status);
+                    return;
+                }
+                showToast('Product added successfully');
+                setTimeout(() => location.href = 'index.html', 1500);
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to add product: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
