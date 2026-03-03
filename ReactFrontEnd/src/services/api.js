@@ -2,6 +2,8 @@ import { getToken } from '../utils/auth';
 
 const API_BASE = 'http://localhost:8080';
 
+// const API_BASE = 'http://localhost:8001';
+
 const authHeaders = () => ({ Authorization: `Bearer ${getToken()}` });
 
 export const authAPI = {

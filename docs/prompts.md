@@ -165,3 +165,48 @@ Create enum Role with values ADMIN, CUSTOMER. Keep it in package model. No metho
 **Prompt:** everything is working fine thanks ,but image is not displaying on homepage fix it
 
 **Use Case:** Fixed image display by adding token as query parameter to image URLs (since <img> tags can't send Authorization headers), updated JwtAuthenticationFilter to accept token from query parameter for /image endpoints, added cache headers for better performance.
+
+## Prompt 31
+**Prompt:** You are a senior full‑stack architect with production experience in: Java Spring Boot, FastAPI (Python), React (frontend), PostgreSQL, Spring Data JPA, JWT authentication, JUnit testing. I have an existing production‑style e‑commerce application. Current State: Backend: Java Spring Boot REST API. Target State: Backend: Python FastAPI. Non‑negotiable constraints: Do NOT change API contracts, endpoints, HTTP methods, request/response JSON, multipart image handling, database schema, any field or field type, or the frontend. This is a technology migration, not a redesign. All existing Postman calls must continue to work exactly the same. Backend migration (Java → Python): Framework: FastAPI, Python: 3.11+, ORM: SQLAlchemy, Auth: JWT, Validation: Pydantic, Testing: pytest. Mapping rules: Controllers → FastAPI routers, Services → Python service modules, Repository (JPA) → SQLAlchemy data layer, DTOs → Pydantic models, Entities → SQLAlchemy models, Exception handler → FastAPI exception handlers, Security filter → FastAPI dependency/middleware. Rules: Generate files only when necessary. Pause after each phase and wait for my confirmation. Documentation updates (steps, execution, new prompts) should only be generated after the migration is fully complete. Auto‑install whatever is necessary. Do NOT change endpoints, DB schema, frontend, or field types. Handle CORS issues for connecting frontend and backend. Multipart images must work exactly the same. Images must be renderable in the frontend <img> tag without requiring Authorization headers. First Task: Create a new folder at repo root: backend-py (do not touch the Java code). Begin by generating ONLY the FastAPI backend project skeleton.
+
+**Use Case:** Initiated Java Spring Boot to FastAPI migration, created backend-py folder with complete project structure (models, schemas, routers, services, repositories, core modules), installed all dependencies, and set up JWT authentication, database connection, and CORS configuration.
+
+## Prompt 32
+**Prompt:** continue
+
+**Use Case:** Completed Phase 2 migration: Created all SQLAlchemy models (User, Product, Cart, CartItem, Role), Pydantic schemas (auth, product, cart), repositories (user, product, cart), services (auth, product, cart), and FastAPI routers (auth, product, cart) with all 10 API endpoints, maintaining 100% API contract compatibility.
+
+## Prompt 33
+**Prompt:** confirm
+
+**Use Case:** Completed Phase 3 testing and validation: Initialized database tables, validated all imports, verified database connection, created comprehensive test scripts (validate.py, test_api.py, init_db.py), generated documentation (README.md, QUICKSTART.md, API_MAPPING.md, MIGRATION_STATUS.md, CHECKLIST.md), confirmed 16 routes registered and all validations passed.
+
+## Prompt 34
+**Prompt:** INFO: Will watch for changes in these directories: ['C:\\Users\\akum1183\\OneDrive - Capgemini\\Documents\\Ekart\\backend-py'] ERROR: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+
+**Use Case:** Fixed port conflict by changing FastAPI server port from 8000 to 8001 in main.py.
+
+## Prompt 35
+**Prompt:** stop the server
+
+**Use Case:** Stopped all running Python processes using taskkill command.
+
+## Prompt 36
+**Prompt:** bro front end is not working ,did you allowed cross origin for 8001?
+
+**Use Case:** Fixed frontend image URL to remove token query parameter since images are served without authentication (CORS already configured for all origins).
+
+## Prompt 37
+**Prompt:** Issue to investigate: FastAPI auth endpoints (/auth/login, /auth/register) returning 500. Logs show passlib/bcrypt errors (e.g., "module 'bcrypt' has no attribute __about__", and bcrypt 72-byte limit messages). Root cause likely environment/package compatibility (passlib ↔ bcrypt) or venv/package scope. Diagnose and fix the FastAPI backend auth failure with minimal, targeted changes. Prioritize environment and dependency resolution (venv, package versions) over code edits. If code change is unavoidable, keep it minimal and isolated (no API/DB/frontend changes). Non‑negotiables (DO NOT): Do NOT change any Java code, frontend code, API contracts (endpoints, methods, req/resp shapes), or database schema, tables, fields, or types.
+
+**Use Case:** Fixed bcrypt/passlib compatibility issue by downgrading bcrypt from 5.0.0 to 4.1.3, updated requirements.txt to pin bcrypt==4.1.3, verified auth functionality working correctly.
+
+## Prompt 38
+**Prompt:** add all the prompts to prompts.md
+
+**Use Case:** Appended all migration-related prompts (31-38) to docs/prompts.md for complete project documentation and audit trail.
+
+## Prompt 39
+**Prompt:** Status: GET/PUT/DELETE mappings work fine. Issue only with POST /api/products (multipart). Observed: FastAPI reports validation error: 'product' arrives as UploadFile instead of string JSON. Then custom validation handler crashes trying to JSON-encode UploadFile. Do (minimal): Fix FastAPI POST parsing to accept the existing multipart payload without changing the client. Prefer tolerant parsing: accept 'product' as string or as file part (application/json) and load JSON accordingly. Ensure validation error handler doesn't try to serialize non-JSON types (use a safe encoder). Do NOT: Do NOT change any frontend code (I repeat: do NOT). Do NOT change Java code. Do NOT change API contracts (paths, methods, req/resp). Do NOT change DB schema/fields/types. Scope: Work only under backend-py. Make the smallest possible backend change to make POST work with the current frontend payload. Deliver: What was changed (files + minimal diffs). Confirmation that POST /api/products works with existing frontend & Postman. Stop after fix and report.
+
+**Use Case:** Fixed FastAPI POST /api/products multipart parsing by changing product parameter from Form(...) to File(...) to accept JSON as file part, added logic to read and decode UploadFile as JSON, and fixed validation error handler to exclude non-serializable input field from error responses.
