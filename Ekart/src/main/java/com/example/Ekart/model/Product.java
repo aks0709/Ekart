@@ -56,9 +56,9 @@ public class Product {
     
     private Boolean productAvailable;
     
-    private Integer stockQuantity;
-    
     private String imageName;
+    
+    // private String imageName;
     
     private String imageType;
     

@@ -61,11 +61,11 @@
                         <p class="price">₹${p.price}</p>
                         <p><strong>Brand:</strong> ${p.brand || 'N/A'}</p>
                         <p><strong>Category:</strong> ${p.category || 'N/A'}</p>
-                        <p><strong>Stock:</strong> ${p.stockQuantity || p.stock || 0}</p>
+                        <p><strong>Stock:</strong> ${p.stock || 0}</p>
                         <p><strong>Available:</strong> ${p.productAvailable ? 'Yes' : 'No'}</p>
                         <p><strong>Description:</strong> ${p.description || 'No description'}</p>
                         <div class="admin-actions-detail">
-                            <button onclick="addToCart(${p.id}, '${p.name}', ${p.price}, ${p.stockQuantity || p.stock || 0})">Add to Cart</button>
+                            <button onclick="addToCart(${p.id}, '${p.name}', ${p.price}, ${p.stock || 0})">Add to Cart</button>
                             <button onclick="editProduct(${p.id})">Update</button>
                             <button onclick="deleteProduct(${p.id})">Delete</button>
                         </div>

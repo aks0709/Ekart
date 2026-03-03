@@ -29,8 +29,8 @@ class ProductServiceTest {
 
     @Test
     void testCreateProduct() {
-        Product product = new Product(null, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null, null);
-        Product saved = new Product(1L, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null, null);
+        Product product = new Product(null, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null);
+        Product saved = new Product(1L, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null);
         when(repository.save(any(Product.class))).thenReturn(saved);
 
         Product result = service.create(product);
@@ -43,7 +43,7 @@ class ProductServiceTest {
 
     @Test
     void testGetByIdSuccess() {
-        Product product = new Product(1L, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null, null);
+        Product product = new Product(1L, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null);
         when(repository.findById(1L)).thenReturn(Optional.of(product));
 
         Product result = service.getById(1L);
@@ -61,8 +61,8 @@ class ProductServiceTest {
 
     @Test
     void testGetAll() {
-        Product p1 = new Product(1L, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null, null);
-        Product p2 = new Product(2L, "Mouse", new BigDecimal("29.99"), "Wireless mouse", 50, null, null, null, null, null, null, null, null);
+        Product p1 = new Product(1L, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null);
+        Product p2 = new Product(2L, "Mouse", new BigDecimal("29.99"), "Wireless mouse", 50, null, null, null, null, null, null, null);
         when(repository.findAll()).thenReturn(Arrays.asList(p1, p2));
 
         List<Product> result = service.getAll();
@@ -73,8 +73,8 @@ class ProductServiceTest {
 
     @Test
     void testUpdateProduct() {
-        Product existing = new Product(1L, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null, null);
-        Product updated = new Product(1L, "Updated Laptop", new BigDecimal("899.99"), "Updated desc", 5, null, null, null, null, null, null, null, null);
+        Product existing = new Product(1L, "Laptop", new BigDecimal("999.99"), "Gaming laptop", 10, null, null, null, null, null, null, null);
+        Product updated = new Product(1L, "Updated Laptop", new BigDecimal("899.99"), "Updated desc", 5, null, null, null, null, null, null, null);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
         when(repository.save(any(Product.class))).thenReturn(updated);
 

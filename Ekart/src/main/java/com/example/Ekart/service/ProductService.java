@@ -53,7 +53,6 @@ public class ProductService {
             quantity = Integer.parseInt(stock);
         }
         p.setStock(quantity);
-        p.setStockQuantity(quantity);
         if (image != null && !image.isEmpty()) {
             p.setImageName(image.getOriginalFilename());
             p.setImageType(image.getContentType());
@@ -82,7 +81,6 @@ public class ProductService {
         existing.setDescription(p.getDescription());
         if (p.getStock() != null) {
             existing.setStock(p.getStock());
-            existing.setStockQuantity(p.getStock());
         }
         existing.setBrand(p.getBrand());
         existing.setCategory(p.getCategory());
