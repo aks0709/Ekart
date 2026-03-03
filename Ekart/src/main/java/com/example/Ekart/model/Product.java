@@ -62,7 +62,6 @@ public class Product {
     
     private String imageType;
     
-    @Lob
-    @Column(columnDefinition = "BYTEA")
+    @Column(name = "image_data", columnDefinition = "bytea")
     private byte[] imageData;
 }

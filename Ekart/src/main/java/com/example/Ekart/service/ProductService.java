@@ -26,39 +26,14 @@ public class ProductService {
         return repository.save(p);
     }
 
-    public Product createWithImage(String name, String price, String description, String brand,
-                                   String category, String stock, String productAvailable,
-                                   String releaseDate, MultipartFile image) throws Exception {
-        log.info("ProductService.createWithImage name={}", name);
-        Product p = new Product();
-        p.setName(name);
-        p.setPrice(new BigDecimal(price));
-        if (description != null && !description.isEmpty()) {
-            p.setDescription(description);
-        }
-        if (brand != null && !brand.isEmpty()) {
-            p.setBrand(brand);
-        }
-        if (category != null && !category.isEmpty()) {
-            p.setCategory(category);
-        }
-        if (releaseDate != null && !releaseDate.isEmpty()) {
-            p.setReleaseDate(LocalDate.parse(releaseDate));
-        }
-        if (productAvailable != null && !productAvailable.isEmpty()) {
-            p.setProductAvailable(Boolean.parseBoolean(productAvailable));
-        }
-        int quantity = 0;
-        if (stock != null && !stock.isEmpty()) {
-            quantity = Integer.parseInt(stock);
-        }
-        p.setStock(quantity);
+    public Product createWithImage(Product product, MultipartFile image) throws Exception {
+        log.info("ProductService.createWithImage name={}", product.getName());
         if (image != null && !image.isEmpty()) {
-            p.setImageName(image.getOriginalFilename());
-            p.setImageType(image.getContentType());
-            p.setImageData(image.getBytes());
+            product.setImageName(image.getOriginalFilename());
+            product.setImageType(image.getContentType());
+            product.setImageData(image.getBytes());
         }
-        return repository.save(p);
+        return repository.save(product);
     }
 
     public Product getById(Long id) {
@@ -86,6 +61,28 @@ public class ProductService {
         existing.setCategory(p.getCategory());
         existing.setReleaseDate(p.getReleaseDate());
         existing.setProductAvailable(p.getProductAvailable());
+        return repository.save(existing);
+    }
+
+    public Product updateWithImage(Long id, Product p, MultipartFile image) throws Exception {
+        log.info("ProductService.updateWithImage id={}", id);
+        Product existing = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        existing.setName(p.getName());
+        existing.setPrice(p.getPrice());
+        existing.setDescription(p.getDescription());
+        if (p.getStock() != null) {
+            existing.setStock(p.getStock());
+        }
+        existing.setBrand(p.getBrand());
+        existing.setCategory(p.getCategory());
+        existing.setReleaseDate(p.getReleaseDate());
+        existing.setProductAvailable(p.getProductAvailable());
+        if (image != null && !image.isEmpty()) {
+            existing.setImageName(image.getOriginalFilename());
+            existing.setImageType(image.getContentType());
+            existing.setImageData(image.getBytes());
+        }
         return repository.save(existing);
     }
 

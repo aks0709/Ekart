@@ -28,17 +28,39 @@ export default function EditProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.price < 0 || form.stock < 0) {
-      setToast({ message: 'Price and stock must be >= 0', type: 'error' });
+    
+    // Validation
+    if (!form.name.trim()) {
+      setToast({ message: 'Name is required', type: 'error' });
+      return;
+    }
+    if (!form.price || parseFloat(form.price) < 0) {
+      setToast({ message: 'Price must be >= 0', type: 'error' });
+      return;
+    }
+    if (form.stock && parseInt(form.stock) < 0) {
+      setToast({ message: 'Stock must be >= 0', type: 'error' });
       return;
     }
 
     try {
-      await productAPI.update(id, form);
+      const productData = {
+        name: form.name,
+        price: parseFloat(form.price),
+        description: form.description || null,
+        brand: form.brand || null,
+        category: form.category || null,
+        stock: form.stock ? parseInt(form.stock) : 0,
+        productAvailable: form.productAvailable,
+        releaseDate: form.releaseDate || null
+      };
+      
+      const response = await productAPI.update(id, productData);
       setToast({ message: 'Product updated!', type: 'success' });
       setTimeout(() => navigate('/'), 1500);
     } catch (err) {
-      setToast({ message: 'Failed to update product', type: 'error' });
+      console.error('Update product error:', err);
+      setToast({ message: err.message || 'Failed to update product', type: 'error' });
     }
   };
 

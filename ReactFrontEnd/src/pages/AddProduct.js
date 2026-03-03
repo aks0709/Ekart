@@ -13,21 +13,42 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.price < 0 || form.stock < 0) {
-      setToast({ message: 'Price and stock must be >= 0', type: 'error' });
+    
+    // Validation
+    if (!form.name.trim()) {
+      setToast({ message: 'Name is required', type: 'error' });
+      return;
+    }
+    if (!form.price || parseFloat(form.price) < 0) {
+      setToast({ message: 'Price must be >= 0', type: 'error' });
+      return;
+    }
+    if (form.stock && parseInt(form.stock) < 0) {
+      setToast({ message: 'Stock must be >= 0', type: 'error' });
       return;
     }
 
     const formData = new FormData();
-    Object.keys(form).forEach(key => formData.append(key, form[key]));
+    const productData = {
+      name: form.name,
+      price: parseFloat(form.price),
+      description: form.description || null,
+      brand: form.brand || null,
+      category: form.category || null,
+      stock: form.stock ? parseInt(form.stock) : 0,
+      productAvailable: form.productAvailable,
+      releaseDate: form.releaseDate || null
+    };
+    formData.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }));
     if (image) formData.append('image', image);
 
     try {
-      await productAPI.create(formData);
+      const response = await productAPI.create(formData);
       setToast({ message: 'Product added!', type: 'success' });
       setTimeout(() => navigate('/'), 1500);
     } catch (err) {
-      setToast({ message: 'Failed to add product', type: 'error' });
+      console.error('Add product error:', err);
+      setToast({ message: err.message || 'Failed to add product', type: 'error' });
     }
   };
 

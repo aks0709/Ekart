@@ -31,18 +31,30 @@ export const productAPI = {
     fetch(`${API_BASE}/api/products/search?keyword=${keyword}`, { headers: authHeaders() }).then(r => r.json()),
   
   create: (formData) =>
-    fetch(`${API_BASE}/api/products/upload`, {
+    fetch(`${API_BASE}/api/products`, {
       method: 'POST',
       headers: authHeaders(),
       body: formData
-    }).then(r => r.json()),
+    }).then(async r => {
+      if (!r.ok) {
+        const error = await r.text();
+        throw new Error(error || 'Failed to create product');
+      }
+      return r.json();
+    }),
   
   update: (id, product) =>
     fetch(`${API_BASE}/api/products/${id}`, {
       method: 'PUT',
       headers: { ...authHeaders(), 'Content-Type': 'application/json' },
       body: JSON.stringify(product)
-    }).then(r => r.json()),
+    }).then(async r => {
+      if (!r.ok) {
+        const error = await r.text();
+        throw new Error(error || 'Failed to update product');
+      }
+      return r.json();
+    }),
   
   delete: (id) =>
     fetch(`${API_BASE}/api/products/${id}`, {
@@ -50,5 +62,8 @@ export const productAPI = {
       headers: authHeaders()
     }),
   
-  getImageUrl: (id) => `${API_BASE}/api/products/${id}/image`
+  getImageUrl: (id) => {
+    const token = getToken();
+    return `${API_BASE}/api/products/${id}/image?token=${token}`;
+  }
 };

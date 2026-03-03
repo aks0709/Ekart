@@ -23,30 +23,13 @@ public class ProductController {
 
     private final ProductService service;
 
-    // CREATE
-    @PostMapping
-    public ResponseEntity<Product> create(@Valid @RequestBody Product product) {
+    // CREATE with optional image
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<Product> create(
+            @RequestPart("product") Product product,
+            @RequestPart(value = "image", required = false) org.springframework.web.multipart.MultipartFile image) throws Exception {
         log.info("POST /api/products - creating product: name={}", product.getName());
-        Product saved = service.create(product);
-        return ResponseEntity
-                .created(URI.create("/api/products/" + saved.getId()))
-                .body(saved);
-    }
-
-    // CREATE with image
-    @PostMapping(value = "/upload", consumes = "multipart/form-data")
-    public ResponseEntity<Product> createWithImage(
-            @RequestParam("name") String name,
-            @RequestParam("price") String price,
-            @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "brand", required = false) String brand,
-            @RequestParam(value = "category", required = false) String category,
-            @RequestParam(value = "stock", required = false) String stock,
-            @RequestParam(value = "productAvailable", required = false) String productAvailable,
-            @RequestParam(value = "releaseDate", required = false) String releaseDate,
-            @RequestParam(value = "image", required = false) org.springframework.web.multipart.MultipartFile image) throws Exception {
-        log.info("POST /api/products/upload - creating product with image: name={}", name);
-        Product saved = service.createWithImage(name, price, description, brand, category, stock, productAvailable, releaseDate, image);
+        Product saved = service.createWithImage(product, image);
         return ResponseEntity
                 .created(URI.create("/api/products/" + saved.getId()))
                 .body(saved);
@@ -60,6 +43,7 @@ public class ProductController {
         if (product.getImageData() != null) {
             return ResponseEntity.ok()
                     .header("Content-Type", product.getImageType())
+                    .header("Cache-Control", "max-age=3600")
                     .body(product.getImageData());
         }
         return ResponseEntity.notFound().build();
@@ -80,8 +64,10 @@ public class ProductController {
     }
 
     // UPDATE
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @Valid @RequestBody Product product) {
+    @PutMapping(value = "/{id}", consumes = "application/json")
+    public ResponseEntity<Product> update(
+            @PathVariable Long id,
+            @RequestBody Product product) throws Exception {
         log.info("PUT /api/products/{} - updating product", id);
         return ResponseEntity.ok(service.update(id, product));
     }
