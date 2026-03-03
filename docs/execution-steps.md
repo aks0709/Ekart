@@ -6,7 +6,8 @@
 - **Java**: JDK 21 or higher
 - **PostgreSQL**: Version 17.6 or higher
 - **Maven**: 3.6+ (or use included Maven wrapper)
-- **VS Code** (optional): With Live Server extension
+- **Node.js**: 16+ and npm
+- **VS Code** (optional): With extensions
 - **Web Browser**: Chrome, Firefox, or Edge
 
 ---
@@ -133,75 +134,45 @@ You should see a 405 error (Method Not Allowed) - this is expected for GET reque
 
 ---
 
-## 3. Frontend Setup & Execution
+## 3. React Frontend Setup & Execution
 
-### Method 1: Using VS Code Live Server (Recommended)
-
-#### Step 1: Install Live Server Extension
-1. Open VS Code
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search "Live Server"
-4. Install "Live Server" by Ritwick Dey
-
-#### Step 2: Open Frontend
-1. Open `Ekart/Ekart/frontend` folder in VS Code
-2. Right-click on `login.html`
-3. Select "Open with Live Server"
-
-**URL**: `http://127.0.0.1:5500/login.html`
-
----
-
-### Method 2: Direct File Opening
-
-#### Step 1: Navigate to Frontend Folder
-```
-Ekart/Ekart/frontend/
-```
-
-#### Step 2: Open in Browser
-Double-click `login.html` or drag it to browser
-
-**URL**: `file:///C:/Users/.../Ekart/Ekart/frontend/login.html`
-
-**Note**: Some browsers may block CORS requests with file:// protocol. Use Live Server instead.
-
----
-
-### Method 3: Using Python HTTP Server
-
-#### Navigate to Frontend Directory
+### Step 1: Navigate to React Frontend Directory
 ```cmd
-cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\Ekart\frontend
+cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\ReactFrontEnd
 ```
 
-#### Start Server (Python 3)
+### Step 2: Install Dependencies
 ```cmd
-python -m http.server 8000
+npm install
 ```
 
-**URL**: `http://localhost:8000/login.html`
+This will install:
+- React 18.2
+- React Router 6
+- TailwindCSS 3.4
+- All required dependencies
 
----
-
-### Method 4: Using Node.js HTTP Server
-
-#### Install http-server globally
+### Step 3: Start React Development Server
 ```cmd
-npm install -g http-server
+npm start
 ```
 
-#### Navigate to Frontend Directory
-```cmd
-cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\Ekart\frontend
+**Expected Output**:
+```
+Compiled successfully!
+
+You can now view ekart-frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.x.x:3000
 ```
 
-#### Start Server
-```cmd
-http-server -p 8000
-```
+**Access URL**: `http://localhost:3000`
 
-**URL**: `http://localhost:8000/login.html`
+### Step 4: Verify React App
+- Browser should automatically open to `http://localhost:3000`
+- You should see the Login page
+- Check browser console for any errors
 
 ---
 
@@ -211,17 +182,15 @@ http-server -p 8000
 
 #### Terminal 1 (Backend)
 ```cmd
-cd Ekart/Ekart
+cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\Ekart
 mvnw.cmd spring-boot:run
 ```
 
-#### Terminal 2 (Frontend)
+#### Terminal 2 (React Frontend)
 ```cmd
-cd Ekart/Ekart/frontend
-python -m http.server 8000
+cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\ReactFrontEnd
+npm start
 ```
-
-Or use Live Server extension.
 
 ---
 
@@ -233,20 +202,11 @@ cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\Ekart
 mvnw.cmd spring-boot:run
 ```
 
-#### Window 2: Frontend
-Open `frontend/login.html` with Live Server or browser
-
----
-
-### Option 3: Background Process (Windows)
-
-#### Start Backend in Background
+#### Window 2: React Frontend
 ```cmd
-start /B mvnw.cmd spring-boot:run
+cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\ReactFrontEnd
+npm start
 ```
-
-#### Start Frontend
-Use Live Server or any HTTP server method
 
 ---
 
@@ -255,43 +215,75 @@ Use Live Server or any HTTP server method
 ### Step 1: Start Backend
 Ensure backend is running on `http://localhost:8080`
 
-### Step 2: Open Frontend
-Navigate to `http://127.0.0.1:5500/login.html` (or your frontend URL)
+### Step 2: Start React Frontend
+Ensure React app is running on `http://localhost:3000`
 
 ### Step 3: Register User
-1. Click "Register" link
-2. Fill in details:
+1. Navigate to `http://localhost:3000`
+2. Click "Register" link
+3. Fill in details:
    - Name: John Doe
    - Email: john@example.com
    - Password: password123
    - Role: CUSTOMER or ADMIN
-3. Click "Register"
-4. You'll be redirected to home page
+4. Click "Register"
+5. You'll be redirected to home page
 
 ### Step 4: Login (if already registered)
 1. Enter email and password
 2. Click "Login"
 3. Redirected to home page
 
-### Step 5: Manage Products
-- View all products
-- Click "Add Product" to create new product
-- Click "Edit" to update product
-- Click "Delete" to remove product
-- Click "Add to Cart" to add product to cart
+### Step 5: Browse Products (All Users)
+- View all products with images
+- Use search bar to filter products
+- Apply category/brand filters
+- Sort by price (low to high, high to low)
+- Click product card to view details
 
-### Step 6: View Cart
-1. Click "Cart" in navigation
-2. Adjust quantities with +/- buttons
-3. Remove items
-4. Clear entire cart
+### Step 6: Manage Products (Admin Only)
+- Click "Add Product" in navbar
+- Fill form with product details and upload image
+- Click "Update" on product cards to edit
+- Click "Delete" to remove products
 
-### Step 7: Logout
-Click "Logout" button in navigation
+### Step 7: Shopping Cart (Customer)
+- Click "Add to Cart" on product cards
+- Navigate to Cart page
+- Adjust quantities with +/- buttons
+- Remove items or clear entire cart
+- Click "Place Order" (shows confirmation dialog)
+
+### Step 8: Logout
+Click "Logout" button in navigation bar
 
 ---
 
-## 6. Postman Setup
+## 6. React App Features
+
+### Pages
+- `/login` - User authentication
+- `/register` - User registration with role selection
+- `/` - Home page with product listing
+- `/product/:id` - Product detail view
+- `/cart` - Shopping cart
+- `/add-product` - Add new product (Admin only)
+- `/edit-product/:id` - Edit product (Admin only)
+
+### Key Features
+- **Authentication**: JWT token stored in localStorage
+- **Role-Based Access**: Admin sees CRUD controls, Customer sees cart
+- **Live Search**: Filter products as you type
+- **Filters**: Category, Brand
+- **Sort**: Price low to high, high to low
+- **Cart Management**: Add, remove, update quantity, clear cart
+- **Image Upload**: Multipart form data with preview
+- **Toast Notifications**: Success/error feedback
+- **Responsive Design**: TailwindCSS mobile-first approach
+
+---
+
+## 7. Postman Setup
 
 ### Step 1: Import Collection
 
@@ -378,7 +370,44 @@ Authorization: Bearer {{token}}
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
+
+### React Frontend Issues
+
+#### Port 3000 Already in Use
+```cmd
+# Find process using port 3000
+netstat -ano | findstr :3000
+
+# Kill process (replace PID)
+taskkill /PID <PID> /F
+```
+
+#### npm install fails
+```cmd
+# Clear npm cache
+npm cache clean --force
+
+# Delete node_modules and package-lock.json
+rmdir /s /q node_modules
+del package-lock.json
+
+# Reinstall
+npm install
+```
+
+#### CORS Error
+- Verify backend is running on port 8080
+- Check SecurityConfig has `http://localhost:3000` in allowed origins
+- Restart backend after CORS changes
+
+#### Images Not Loading
+- Check browser console for 401 errors
+- Verify JWT token is in localStorage
+- Check image endpoint returns data in Postman
+- Ensure token is appended to image URL as query parameter
+
+---
 
 ### Backend Issues
 
@@ -496,7 +525,7 @@ BUILD SUCCESS
 
 ---
 
-## 10. Quick Start Commands
+## 11. Quick Start Commands
 
 ### Complete Setup (Windows)
 ```cmd
@@ -504,23 +533,34 @@ BUILD SUCCESS
 cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\Ekart
 mvnw.cmd spring-boot:run
 
-# Terminal 2: Start Frontend (if using Python)
-cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\Ekart\frontend
-python -m http.server 8000
-
-# Or just open frontend/login.html with Live Server in VS Code
+# Terminal 2: Start React Frontend
+cd C:\Users\akum1183\OneDrive - Capgemini\Documents\Ekart\ReactFrontEnd
+npm start
 ```
 
 ### Access URLs
 - **Backend API**: http://localhost:8080
-- **Frontend**: http://127.0.0.1:5500/login.html (Live Server)
-- **Frontend**: http://localhost:8000/login.html (Python server)
+- **React Frontend**: http://localhost:3000
 
 ---
 
-## 11. Production Deployment Notes
+## 12. Building for Production
 
-### Build Production JAR
+### Build React App
+```cmd
+cd ReactFrontEnd
+npm run build
+```
+
+This creates optimized production build in `build/` folder.
+
+### Serve Production Build
+```cmd
+npm install -g serve
+serve -s build -l 3000
+```
+
+### Build Backend JAR
 ```cmd
 mvnw.cmd clean package -DskipTests
 ```

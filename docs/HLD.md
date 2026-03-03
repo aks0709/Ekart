@@ -2,38 +2,52 @@
 
 ## 1. System Overview
 
-EKART is a full-stack e-commerce application built with Spring Boot backend and vanilla JavaScript frontend. It provides product management, user authentication, and shopping cart functionality.
+EKART is a full-stack e-commerce application built with Spring Boot backend and React frontend. It provides product management, user authentication, shopping cart functionality, and role-based access control.
 
 **Tech Stack:**
 - Backend: Spring Boot 4.0.3, Java 21
 - Database: PostgreSQL 17.6
 - Security: JWT (JSON Web Tokens)
-- Frontend: HTML5, CSS3, Vanilla JavaScript
-- Build Tool: Maven
+- Frontend: React 18.2, React Router 6, TailwindCSS 3.4
+- Build Tools: Maven (Backend), npm (Frontend)
 
 ---
 
 ## 2. Architecture Layers
 
-### 2.1 Presentation Layer (Frontend)
+### 2.1 Frontend Architecture (React)
+
 ```
-┌─────────────────────────────────────┐
-│         HTML Pages                  │
-│  - login.html                       │
-│  - register.html                    │
-│  - home.html (Products)             │
-│  - cart.html                        │
-└─────────────────────────────────────┘
-           ↓ HTTP/REST
-┌─────────────────────────────────────┐
-│      JavaScript Modules             │
-│  - auth.js (Authentication)         │
-│  - products.js (Product CRUD)       │
-│  - cart.js (Cart Management)        │
-└─────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│         React Application (Port 3000)       │
+├─────────────────────────────────────────────┤
+│  Pages Layer                                │
+│  - Login, Register                          │
+│  - Home (Product Listing)                   │
+│  - ProductDetail                            │
+│  - Cart                                     │
+│  - AddProduct, EditProduct (Admin)          │
+├─────────────────────────────────────────────┤
+│  Components Layer                           │
+│  - Navbar (Role-based rendering)            │
+│  - ProductCard                              │
+│  - Toast (Notifications)                    │
+├─────────────────────────────────────────────┤
+│  Services Layer                             │
+│  - api.js (authAPI, productAPI)             │
+├─────────────────────────────────────────────┤
+│  Utils & Hooks                              │
+│  - auth.js (Token management)               │
+│  - cart.js (LocalStorage cart)              │
+│  - useCart.js (Custom hook)                 │
+└─────────────────────────────────────────────┘
+           ↓ HTTP/REST (JWT)
+┌─────────────────────────────────────────────┐
+│      Spring Boot Backend (Port 8080)        │
+└─────────────────────────────────────────────┘
 ```
 
-### 2.2 Application Layer (Backend)
+### 2.2 Backend Architecture (Spring Boot)
 ```
 ┌─────────────────────────────────────────────┐
 │            Controller Layer                 │
